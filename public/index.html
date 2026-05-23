@@ -186,7 +186,7 @@
       </div>
       <div class="paywall-gate">
         <p>Your letter is ready. Unlock the full version to copy and use it.</p>
-        <a id="unlockBtn" class="unlock-btn" href="YOUR_STRIPE_LINK_HERE" target="_blank" onclick="handleUnlock(event)">
+        <a id="unlockBtn" class="unlock-btn" href="https://buy.stripe.com/dRmaEW3NIaSNeZX4cI3ZK00" target="_blank" onclick="handleUnlock(event)">
           Unlock for £6 →
         </a>
         <p class="secure-note">🔒 Secure payment via Stripe. Instant access after payment.</p>
@@ -222,7 +222,7 @@
 <footer>© 2026 CareerShift. Built to help career changers get hired.</footer>
 
 <script>
-  const STRIPE_LINK = 'YOUR_STRIPE_LINK_HERE';
+  const STRIPE_LINK = 'https://buy.stripe.com/dRmaEW3NIaSNeZX4cI3ZK00';
   let generatedLetter = '';
 
   async function generateLetter() {
@@ -276,7 +276,7 @@
   }
 
   function handleUnlock(e) {
-    if (STRIPE_LINK === 'YOUR_STRIPE_LINK_HERE') {
+    if (STRIPE_LINK === 'https://buy.stripe.com/dRmaEW3NIaSNeZX4cI3ZK00') {
       e.preventDefault();
       unlockLetter();
       return;
