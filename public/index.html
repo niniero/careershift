@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerShift — Cover Letters for Career Changers</title>
+  <meta name="description" content="Turn your non-traditional background into your biggest asset. AI-powered cover letters for career changers. £6 per letter." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1a2744;
+      --navy-light: #2d3f6b;
+      --accent: #e86c3a;
+      --accent-light: #fdf0ea;
+      --text: #1a2744;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #fafaf8;
+      --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    nav {
+      padding: 1.25rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    .price-pill { font-size: 13px; font-weight: 500; background: var(--accent-light); color: var(--accent); padding: 5px 14px; border-radius: 100px; }
+
+    .hero { max-width: 680px; margin: 0 auto; padding: 4rem 2rem 2rem; text-align: center; }
+    .hero-badge { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 5px 14px; border-radius: 100px; margin-bottom: 1.25rem; }
+    .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(32px, 5vw, 48px); color: var(--navy); line-height: 1.2; margin-bottom: 1rem; }
+    .hero p { font-size: 17px; color: var(--text-muted); max-width: 520px; margin: 0 auto 2rem; line-height: 1.7; }
+
+    .trust-bar { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; padding: 1rem 2rem 2.5rem; max-width: 680px; margin: 0 auto; }
+    .trust-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-muted); }
+    .trust-item svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+
+    .main { max-width: 680px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; }
+    .card-title { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+    .field { margin-bottom: 1.25rem; }
+    .field:last-child { margin-bottom: 0; }
+    .field label { display: block; font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 6px; }
+    .field input, .field textarea { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; transition: border-color 0.15s, background 0.15s; outline: none; }
+    .field input:focus, .field textarea:focus { border-color: var(--navy); background: var(--white); }
+    .field textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+    .field .hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } }
+
+    .generate-btn { width: 100%; padding: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; background: var(--navy); color: var(--white); border: none; border-radius: 12px; cursor: pointer; transition: background 0.15s, transform 0.1s; margin-top: 0.25rem; }
+    .generate-btn:hover { background: var(--navy-light); }
+    .generate-btn:active { transform: scale(0.99); }
+    .generate-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .loading { display: none; text-align: center; padding: 2.5rem; }
+    .loading.visible { display: block; }
+    .dot-loader { display: flex; justify-content: center; gap: 6px; margin-bottom: 1rem; }
+    .dot-loader span { width: 8px; height: 8px; border-radius: 50%; background: var(--navy); animation: bounce 1.2s infinite; }
+    .dot-loader span:nth-child(2) { animation-delay: 0.2s; }
+    .dot-loader span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-8px); opacity: 1; } }
+    .loading p { font-size: 14px; color: var(--text-muted); }
+
+    .result-card { display: none; background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; }
+    .result-card.visible { display: block; }
+    .result-top { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .result-top h2 { font-size: 15px; font-weight: 600; color: var(--navy); }
+
+    .letter-body { padding: 1.5rem; font-size: 15px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
+
+    .letter-blur { max-height: 280px; overflow: hidden; mask-image: linear-gradient(to bottom, black 35%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 35%, transparent 100%); }
+    .paywall-gate { padding: 1.5rem; text-align: center; border-top: 1px solid var(--border); }
+    .paywall-gate p { font-size: 14px; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; }
+    .unlock-btn { display: inline-block; padding: 14px 36px; background: var(--accent); color: var(--white); border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; text-decoration: none; transition: opacity 0.15s; }
+    .unlock-btn:hover { opacity: 0.9; }
+    .secure-note { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+
+    .unlocked-body { display: none; }
+    .unlocked-body.visible { display: block; }
+
+    .copy-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-muted); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: background 0.1s; }
+    .copy-btn:hover { background: var(--border); }
+    .regen-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--navy); background: transparent; border: 1px solid var(--navy); border-radius: 8px; cursor: pointer; }
+    .regen-btn:hover { background: #f0f2f7; }
+
+    .error-msg { display: none; background: #fef2f2; color: #dc2626; border-radius: 10px; padding: 10px 14px; font-size: 14px; margin-top: 0.75rem; }
+    .error-msg.visible { display: block; }
+
+    .how-section { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; text-align: center; }
+    .how-section h2 { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--navy); margin-bottom: 2rem; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    @media (max-width: 500px) { .steps { grid-template-columns: 1fr; } }
+    .step { padding: 1.5rem 1rem; background: var(--white); border: 1px solid var(--border); border-radius: 14px; }
+    .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; }
+    .step h3 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 0.5rem; }
+    .step p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    footer { text-align: center; padding: 2rem; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo">Career<span>Shift</span></a>
+  <span class="price-pill">£6 per letter</span>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">AI-powered cover letters</div>
+  <h1>Land the job.<br>Even without the<br>"right" background.</h1>
+  <p>Tell us where you're coming from and where you want to go. We'll write a cover letter that turns your experience into your biggest asset.</p>
+</section>
+
+<div class="trust-bar">
+  <div class="trust-item">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    Ready in 30 seconds
+  </div>
+  <div class="trust-item">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+    Tailored to your story
+  </div>
+  <div class="trust-item">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Pay only for what you use
+  </div>
+</div>
+
+<main class="main">
+  <div class="card">
+    <p class="card-title">Your details</p>
+    <div class="two-col">
+      <div class="field">
+        <label for="currentRole">Current or most recent role</label>
+        <input type="text" id="currentRole" placeholder="e.g. Teaching Assistant" />
+      </div>
+      <div class="field">
+        <label for="targetRole">Role you're applying for</label>
+        <input type="text" id="targetRole" placeholder="e.g. HR Coordinator" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="company">Company name <span style="font-weight:400; color: var(--text-muted);">(optional)</span></label>
+      <input type="text" id="company" placeholder="e.g. Barclays" />
+    </div>
+    <div class="field">
+      <label for="experience">Your key experience and skills</label>
+      <textarea id="experience" placeholder="Write in plain English. e.g. I've managed a caseload of 12 young people, written monthly reports, worked with parents and external agencies, delivered weekly group sessions..."></textarea>
+      <p class="hint">Don't overthink it. More detail = better letter.</p>
+    </div>
+    <div class="field">
+      <label for="motivation">Why do you want this role? <span style="font-weight:400; color: var(--text-muted);">(optional)</span></label>
+      <textarea id="motivation" placeholder="e.g. I want to move into HR because I genuinely love supporting people through transitions..." style="min-height: 75px;"></textarea>
+    </div>
+    <button class="generate-btn" id="generateBtn" onclick="generateLetter()">Generate my cover letter →</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="dot-loader"><span></span><span></span><span></span></div>
+    <p>Writing your cover letter...</p>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-top">
+      <h2>Your cover letter</h2>
+      <div style="display:flex; gap: 8px;">
+        <button class="regen-btn" id="regenBtn" onclick="regenerate()" style="display:none;">↺ Regenerate</button>
+        <button class="copy-btn" id="copyBtn" onclick="copyLetter()" style="display:none;">⎘ Copy</button>
+      </div>
+    </div>
+    <div id="paywallSection">
+      <div class="letter-blur">
+        <div class="letter-body" id="letterPreview"></div>
+      </div>
+      <div class="paywall-gate">
+        <p>Your letter is ready. Unlock the full version to copy and use it.</p>
+        <a id="unlockBtn" class="unlock-btn" href="YOUR_STRIPE_LINK_HERE" target="_blank" onclick="handleUnlock(event)">
+          Unlock for £6 →
+        </a>
+        <p class="secure-note">🔒 Secure payment via Stripe. Instant access after payment.</p>
+      </div>
+    </div>
+    <div class="unlocked-body" id="unlockedBody">
+      <div class="letter-body" id="unlockedLetter"></div>
+    </div>
+  </div>
+</main>
+
+<section class="how-section">
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Tell us your story</h3>
+      <p>Fill in your background and the role you want. Plain English is fine.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>AI writes your letter</h3>
+      <p>Our AI reframes your experience as the exact asset the employer needs.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Pay and download</h3>
+      <p>One payment of £6. Instant access. Copy and paste straight into your application.</p>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 CareerShift. Built to help career changers get hired.</footer>
+
+<script>
+  const STRIPE_LINK = 'YOUR_STRIPE_LINK_HERE';
+  let generatedLetter = '';
+
+  async function generateLetter() {
+    const currentRole = document.getElementById('currentRole').value.trim();
+    const targetRole = document.getElementById('targetRole').value.trim();
+    const company = document.getElementById('company').value.trim();
+    const experience = document.getElementById('experience').value.trim();
+    const motivation = document.getElementById('motivation').value.trim();
+    const errorMsg = document.getElementById('errorMsg');
+
+    errorMsg.classList.remove('visible');
+
+    if (!currentRole || !targetRole || !experience) {
+      errorMsg.textContent = 'Please fill in your current role, target role, and your experience.';
+      errorMsg.classList.add('visible');
+      return;
+    }
+
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = true;
+    document.getElementById('loading').classList.add('visible');
+    document.getElementById('resultCard').classList.remove('visible');
+    document.getElementById('paywallSection').style.display = 'block';
+    document.getElementById('unlockedBody').classList.remove('visible');
+    document.getElementById('copyBtn').style.display = 'none';
+    document.getElementById('regenBtn').style.display = 'none';
+
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentRole, targetRole, company, experience, motivation })
+      });
+
+      const data = await response.json();
+      if (!data.letter) throw new Error('No letter');
+
+      generatedLetter = data.letter;
+      document.getElementById('letterPreview').textContent = generatedLetter;
+      document.getElementById('loading').classList.remove('visible');
+      document.getElementById('resultCard').classList.add('visible');
+      document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+      document.getElementById('loading').classList.remove('visible');
+      errorMsg.textContent = 'Something went wrong. Please try again.';
+      errorMsg.classList.add('visible');
+    }
+
+    btn.disabled = false;
+  }
+
+  function handleUnlock(e) {
+    if (STRIPE_LINK === 'YOUR_STRIPE_LINK_HERE') {
+      e.preventDefault();
+      unlockLetter();
+      return;
+    }
+    localStorage.setItem('pendingLetter', generatedLetter);
+  }
+
+  function unlockLetter() {
+    document.getElementById('paywallSection').style.display = 'none';
+    document.getElementById('unlockedLetter').textContent = generatedLetter;
+    document.getElementById('unlockedBody').classList.add('visible');
+    document.getElementById('copyBtn').style.display = 'inline-flex';
+    document.getElementById('regenBtn').style.display = 'inline-flex';
+  }
+
+  function copyLetter() {
+    navigator.clipboard.writeText(generatedLetter).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = '⎘ Copy'; }, 2000);
+    });
+  }
+
+  function regenerate() {
+    document.getElementById('resultCard').classList.remove('visible');
+    generateLetter();
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('payment') === 'success') {
+    const saved = localStorage.getItem('pendingLetter');
+    if (saved) {
+      generatedLetter = saved;
+      localStorage.removeItem('pendingLetter');
+      document.getElementById('resultCard').classList.add('visible');
+      document.getElementById('paywallSection').style.display = 'none';
+      document.getElementById('unlockedLetter').textContent = generatedLetter;
+      document.getElementById('unlockedBody').classList.add('visible');
+      document.getElementById('copyBtn').style.display = 'inline-flex';
+      document.getElementById('regenBtn').style.display = 'inline-flex';
+    }
+  }
+</script>
+</body>
+</html>
