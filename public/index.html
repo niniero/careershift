@@ -224,6 +224,7 @@
 <script>
   const STRIPE_LINK = 'https://buy.stripe.com/dRmaEW3NIaSNeZX4cI3ZK00';
   let generatedLetter = '';
+  let letterId = '';
 
   async function generateLetter() {
     const currentRole = document.getElementById('currentRole').value.trim();
@@ -261,6 +262,7 @@
       if (!data.letter) throw new Error('No letter');
 
       generatedLetter = data.letter;
+      letterId = data.id;
       document.getElementById('letterPreview').textContent = generatedLetter;
       document.getElementById('loading').classList.remove('visible');
       document.getElementById('resultCard').classList.add('visible');
@@ -276,11 +278,13 @@
   }
 
   function handleUnlock(e) {
-if (STRIPE_LINK === 'YOUR_STRIPE_LINK_HERE') {      e.preventDefault();
+    if (STRIPE_LINK === 'YOUR_STRIPE_LINK_HERE') {
+      e.preventDefault();
       unlockLetter();
       return;
     }
-    localStorage.setItem('pendingLetter', generatedLetter);
+    const btn = document.getElementById('unlockBtn');
+    btn.href = STRIPE_LINK + '?client_reference_id=' + letterId;
   }
 
   function unlockLetter() {
@@ -306,16 +310,22 @@ if (STRIPE_LINK === 'YOUR_STRIPE_LINK_HERE') {      e.preventDefault();
 
   const params = new URLSearchParams(window.location.search);
   if (params.get('payment') === 'success') {
-    const saved = localStorage.getItem('pendingLetter');
-    if (saved) {
-      generatedLetter = saved;
-      localStorage.removeItem('pendingLetter');
-      document.getElementById('resultCard').classList.add('visible');
-      document.getElementById('paywallSection').style.display = 'none';
-      document.getElementById('unlockedLetter').textContent = generatedLetter;
-      document.getElementById('unlockedBody').classList.add('visible');
-      document.getElementById('copyBtn').style.display = 'inline-flex';
-      document.getElementById('regenBtn').style.display = 'inline-flex';
+    const id = params.get('id');
+    if (id) {
+      fetch('/api/generate?id=' + id)
+        .then(r => r.json())
+        .then(data => {
+          if (data.letter) {
+            generatedLetter = data.letter;
+            document.getElementById('resultCard').classList.add('visible');
+            document.getElementById('paywallSection').style.display = 'none';
+            document.getElementById('unlockedLetter').textContent = generatedLetter;
+            document.getElementById('unlockedBody').classList.add('visible');
+            document.getElementById('copyBtn').style.display = 'inline-flex';
+            document.getElementById('regenBtn').style.display = 'inline-flex';
+            document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+          }
+        });
     }
   }
 </script>
