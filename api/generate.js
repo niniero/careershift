@@ -1,4 +1,18 @@
+import { randomUUID } from 'crypto';
+
+const letters = new Map();
+
 export default async function handler(req, res) {
+  if (req.method === 'GET') {
+    const { id } = req.query;
+    if (!id) return res.status(400).json({ error: 'No ID provided' });
+    
+    const letter = letters.get(id);
+    if (!letter) return res.status(404).json({ error: 'Letter not found' });
+    
+    return res.status(200).json({ letter });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -27,14 +41,18 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    console.log('Status:', response.status, 'Data:', JSON.stringify(data));
 
     if (!response.ok) return res.status(500).json({ error: data.error?.message || 'API error' });
 
     const letter = data?.content?.[0]?.text;
     if (!letter) return res.status(500).json({ error: 'No letter in response' });
 
-    return res.status(200).json({ letter });
+    const id = randomUUID();
+    letters.set(id, letter);
+
+    setTimeout(() => letters.delete(id), 24 * 60 * 60 * 1000);
+
+    return res.status(200).json({ letter, id });
 
   } catch (err) {
     console.error(err.message);
