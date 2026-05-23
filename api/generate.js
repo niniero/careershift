@@ -9,28 +9,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  const prompt = `You are an expert career coach and professional cover letter writer. You specialise in helping people with non-traditional or unconventional backgrounds break into new industries and roles.
-
-Write a compelling, natural-sounding cover letter for the following person:
-
-Current or most recent role: ${currentRole}
-Applying for: ${targetRole}${company ? `\nCompany: ${company}` : ''}
-Their experience and skills: ${experience}${motivation ? `\nWhy they want this role: ${motivation}` : ''}
-
-CRITICAL GUIDELINES:
-- Reframe their background as a genuine, specific asset for the target role - not vague "transferable skills"
-- Be concrete about what they have done and how it maps to what the employer needs
-- Sound like a real, confident person wrote this - not a template
-- 3-4 tight paragraphs maximum
-- Do NOT open with "I am writing to apply for..."
-- Do NOT use em dashes or double hyphens
-- Do NOT use phrases like "I am passionate about" or "I am a team player"
-- Open strong - immediately position their background as relevant
-- End with a specific, confident call to action
-- If no company is provided, address to Hiring Manager
-- UK English spelling throughout
-
-Write only the letter body. No subject line, no headers, no sign-off name.`;
+  const prompt = `You are an expert career coach and professional cover letter writer. You specialise in helping people with non-traditional backgrounds break into new roles.\n\nCurrent role: ${currentRole}\nApplying for: ${targetRole}${company ? `\nCompany: ${company}` : ''}\nExperience: ${experience}${motivation ? `\nMotivation: ${motivation}` : ''}\n\nWrite a compelling 3-4 paragraph cover letter. No em dashes. UK English. No "I am writing to apply". Address to Hiring Manager if no company given. Write only the letter body.`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -41,21 +20,24 @@ Write only the letter body. No subject line, no headers, no sign-off name.`;
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         messages: [{ role: 'user', content: prompt }]
       })
     });
 
     const data = await response.json();
-    const letter = data.content?.[0]?.text;
+    console.log('Status:', response.status, 'Data:', JSON.stringify(data));
 
-    if (!letter) throw new Error('No letter generated');
+    if (!response.ok) return res.status(500).json({ error: data.error?.message || 'API error' });
+
+    const letter = data?.content?.[0]?.text;
+    if (!letter) return res.status(500).json({ error: 'No letter in response' });
 
     return res.status(200).json({ letter });
 
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to generate letter' });
+    console.error(err.message);
+    return res.status(500).json({ error: err.message });
   }
 }
